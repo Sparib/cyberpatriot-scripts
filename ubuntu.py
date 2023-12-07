@@ -26,10 +26,28 @@ def main():
     handleUsers()
 
 def handleUsers():
-    userfile = open(prependHome("Desktop/users.txt"), 'r')
-    needed_users = userfile.read()
-    print(needed_users)
-    userfile.close()
+def execute(command: str, *args: str) -> Union[str, None]:
+    """Executes a command and passed arguments, first asking if the command should be run
+
+    Args:
+        command (str): Path to (or name of) executable
+
+    Returns:
+        [str | None]: Output of command or None if command is not run
+    """
+    cmd = [command, *args]
+    print(*cmd)
+    while 1:
+        resp = input("Run command? (Y/n) ")
+        if resp == "" or resp.lower() == "y": break # Breaks from while loop    (will run command)
+        elif resp.lower() == "n": return None       # Returns from function     (will not run command)
+        # No "else" which causes loop and asking question again if answer is unknown (aka not blank or y/n)
+        
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+
+    out, _ = proc.communicate() # Takes output from function and returns it
+
+    return out.decode('ascii')
 
 
 def prependHome(path: str):    
