@@ -1,4 +1,5 @@
-import os, sys, shutil, getpass
+import os, shutil, subprocess
+from typing import Union
 
 global current_logged_in_user
 sudo_user = os.getenv("SUDO_USER")
@@ -26,6 +27,39 @@ def main():
     handleUsers()
 
 def handleUsers():
+    user_file = open(prependHome("Desktop/users.txt"), 'r')
+    wanted_users: list[str] = []
+    for line in user_file:
+        user = line.strip()
+        wanted_users.append(user)
+    
+    passwd_file = open("/etc/passwd", 'r')
+    current_users: list[str] = []
+    for line in passwd_file:
+        parts = line.split(":")
+        user = parts[0].strip()
+        uid = int(parts[2])
+        if uid >= 1000 and uid < 65534 and user != "nobody": current_users.append(user)
+
+    user_file.close()
+    passwd_file.close()
+
+    needed_users = [x for x in wanted_users if x not in current_users]
+    bad_users = [x for x in current_users if x not in wanted_users]
+
+    print("Needed users: {}".format(needed_users))
+    print("Bad users: {}".format(bad_users))
+    print("Commands:")
+    for user in bad_users:
+        removeUser(user)
+    for user in needed_users:
+        print("useradd", "-d", user)
+
+def removeUser(user: str):
+    if user == current_logged_in_user: return
+    execute("deluser", "--remove-all-files", user)
+
+
 def execute(command: str, *args: str) -> Union[str, None]:
     """Executes a command and passed arguments, first asking if the command should be run
 
