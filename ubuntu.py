@@ -1,5 +1,10 @@
 import os, sys, shutil, getpass
 
+global current_logged_in_user
+sudo_user = os.getenv("SUDO_USER")
+if sudo_user is None:   current_logged_in_user = "root"
+else:                   current_logged_in_user = sudo_user
+del sudo_user
 
 def main():
     # if sys.platform != "linux":
@@ -27,11 +32,8 @@ def handleUsers():
     userfile.close()
 
 
-def prependHome(path: str):
-    sudo_user = os.getenv("SUDO_USER")
-    if sudo_user is None: sudo_user = "root"
-    
-    return os.path.join(os.path.expanduser("~{}".format(sudo_user)), path)
+def prependHome(path: str):    
+    return os.path.join(os.path.expanduser("~{}".format(current_logged_in_user)), path)
     
 def showStartMenu():
     print("\u250f\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2513")
