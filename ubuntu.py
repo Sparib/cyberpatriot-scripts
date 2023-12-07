@@ -2,7 +2,6 @@ import os, sys, shutil, getpass
 
 
 def main():
-    # window = curses.initscr()
     # if sys.platform != "linux":
     #     raise Exception("Must be ran on linux")
     # if os.geteuid() != 0: # type: ignore
