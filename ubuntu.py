@@ -48,16 +48,20 @@ def handleUsers():
     bad_users = [x for x in current_users if x not in wanted_users]
 
     print("Needed users: {}".format(needed_users))
-    print("Bad users: {}".format(bad_users))
-    print("Commands:")
+    print("Bad users: {}\n\n".format(bad_users))
     for user in bad_users:
         removeUser(user)
+    
     for user in needed_users:
-        print("useradd", "-d", user)
+        addUser(user)
 
 def removeUser(user: str):
     if user == current_logged_in_user: return
     execute("deluser", "--remove-all-files", user)
+
+def addUser(user: str):
+    if user == current_logged_in_user: return
+    execute("useradd", "-d", user)
 
 
 def execute(command: str, *args: str) -> Union[str, None]:
